@@ -1,4 +1,4 @@
-# Most Asked 150 DSA Questions in the World
+# Most Asked 150 DSA Questions For Interview
 
 This repository provides a comprehensive list of the **150 most commonly asked Data Structures and Algorithms (DSA) questions** frequently encountered in coding interviews by top tech companies like Amazon, Google, Microsoft, and more.
 
