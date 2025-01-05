@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linked List Coding Problems</title>
+    <style>
+        
+            /* Basic Reset */
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+    
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #121212;
+                color: #e0e0e0;
+                line-height: 1.6;
+                padding: 0 10%;
+            }
+    
+            h1, h3 {
+                color: #ffffff;
+            }
+    
+            h2 {
+                color: #00ff00;
+            }
+    
+            header {
+                background-color: #333;
+                padding: 20px 0;
+                text-align: center;
+            }
+    
+            header h1 {
+                font-size: 2.5rem;
+            }
+    
+            main {
+                padding: 20px 0;
+            }
+    
+            .problem-details {
+                background-color: #333;
+                border-radius: 10px;
+                margin-bottom: 20px;
+                padding: 20px;
+                color: #fff;
+            }
+    
+            .problem-details pre {
+                background-color: #1e1e1e;
+                padding: 10px;
+                color: #a0a0a0;
+                border-radius: 5px;
+            }
+    </style>
+</head>
+<body>
+    <h1>Linked List Coding Problems</h1>
+
+    <main>
+        <section class="problem-details">
+            <h3>Reverse a Linked List</h3>
+            <pre>
+function reverseList(head) {
+    ListNode* prev = NULL;
+    ListNode* current = head;
+    while (current != NULL) {
+        ListNode* nextNode = current->next;
+        current->next = prev;
+        prev = current;
+        current = nextNode;
+    }
+    return prev;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Detect a Cycle in a Linked List</h3>
+            <pre>
+function hasCycle(head) {
+    ListNode* slow = head;
+    ListNode* fast = head;
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+        if (slow == fast) {
+            return true;
+        }
+    }
+    return false;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Find the Intersection Point of Two Linked Lists</h3>
+            <pre>
+function getIntersectionNode(headA, headB) {
+    ListNode* a = headA;
+    ListNode* b = headB;
+    while (a != b) {
+        a = (a == NULL) ? headB : a->next;
+        b = (b == NULL) ? headA : b->next;
+    }
+    return a;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Merge Two Sorted Linked Lists</h3>
+            <pre>
+function mergeTwoLists(l1, l2) {
+    ListNode* dummy = new ListNode(0);
+    ListNode* current = dummy;
+    while (l1 != NULL && l2 != NULL) {
+        if (l1->val < l2->val) {
+            current->next = l1;
+            l1 = l1->next;
+        } else {
+            current->next = l2;
+            l2 = l2->next;
+        }
+        current = current->next;
+    }
+    current->next = (l1 != NULL) ? l1 : l2;
+    return dummy->next;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Add Two Numbers Represented by Linked Lists</h3>
+            <pre>
+function addTwoNumbers(l1, l2) {
+    ListNode* dummy = new ListNode(0);
+    ListNode* p = l1, *q = l2, *current = dummy;
+    int carry = 0;
+    while (p != NULL || q != NULL || carry) {
+        int x = (p != NULL) ? p->val : 0;
+        int y = (q != NULL) ? q->val : 0;
+        int sum = x + y + carry;
+        carry = sum / 10;
+        current->next = new ListNode(sum % 10);
+        current = current->next;
+        if (p != NULL) p = p->next;
+        if (q != NULL) q = q->next;
+    }
+    return dummy->next;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Flatten a Linked List</h3>
+            <pre>
+function flatten(root) {
+    if (root == NULL) return NULL;
+    flattenHelper(root);
+    return root;
+}
+
+function flattenHelper(root) {
+    while (root != NULL) {
+        if (root->child != NULL) {
+            ListNode* nextNode = root->next;
+            root->next = root->child;
+            root->child = NULL;
+            ListNode* child = root->next;
+            while (child->next != NULL) child = child->next;
+            child->next = nextNode;
+        }
+        root = root->next;
+    }
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Rotate a Linked List</h3>
+            <pre>
+function rotateRight(head, k) {
+    if (head == NULL || k == 0) return head;
+    ListNode* temp = head;
+    int length = 1;
+    while (temp->next != NULL) {
+        temp = temp->next;
+        length++;
+    }
+    temp->next = head;
+    k = k % length;
+    for (int i = 0; i < length - k; i++) {
+        temp = temp->next;
+    }
+    head = temp->next;
+    temp->next = NULL;
+    return head;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Remove N-th Node from the End of a Linked List</h3>
+            <pre>
+function removeNthFromEnd(head, n) {
+    ListNode* dummy = new ListNode(0);
+    dummy->next = head;
+    ListNode* fast = dummy;
+    ListNode* slow = dummy;
+    for (int i = 1; i <= n + 1; i++) {
+        fast = fast->next;
+    }
+    while (fast != NULL) {
+        fast = fast->next;
+        slow = slow->next;
+    }
+    slow->next = slow->next->next;
+    return dummy->next;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Find the Middle of a Linked List</h3>
+            <pre>
+function middleNode(head) {
+    ListNode* slow = head;
+    ListNode* fast = head;
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    return slow;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Check if a Linked List is a Palindrome</h3>
+            <pre>
+function isPalindrome(head) {
+    ListNode* slow = head;
+    ListNode* fast = head;
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+    slow = reverse(slow);
+    fast = head;
+    while (slow != NULL) {
+        if (slow->val != fast->val) return false;
+        slow = slow->next;
+        fast = fast->next;
+    }
+    return true;
+}
+
+function reverse(head) {
+    ListNode* prev = NULL;
+    ListNode* current = head;
+    while (current != NULL) {
+        ListNode* nextNode = current->next;
+        current->next = prev;
+        prev = current;
+        current = nextNode;
+    }
+    return prev;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Swap Nodes in Pairs</h3>
+            <pre>
+function swapPairs(head) {
+    ListNode* dummy = new ListNode(0);
+    dummy->next = head;
+    ListNode* current = dummy;
+    while (current->next != NULL && current->next->next != NULL) {
+        ListNode* first = current->next;
+        ListNode* second = current->next->next;
+        first->next = second->next;
+        current->next = second;
+        second->next = first;
+        current = first;
+    }
+    return dummy->next;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Remove Duplicates from a Sorted Linked List</h3>
+            <pre>
+function deleteDuplicates(head) {
+    ListNode* current = head;
+    while (current != NULL && current->next != NULL) {
+        if (current->val == current->next->val) {
+            current->next = current->next->next;
+        } else {
+            current = current->next;
+        }
+    }
+    return head;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Reverse a Linked List in Groups of K</h3>
+            <pre>
+function reverseKGroup(head, k) {
+    ListNode* current = head;
+    int count = 0;
+    while (current != NULL && count < k) {
+        current = current->next;
+        count++;
+    }
+    if (count == k) {
+        current = reverseKGroup(current, k);
+        while (count > 0) {
+            ListNode* nextNode = head->next;
+            head->next = current;
+            current = head;
+            head = nextNode;
+            count--;
+        }
+        head = current;
+    }
+    return head;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Implement LRU Cache (Least Recently Used Cache)</h3>
+            <pre>
+class LRUCache {
+    unordered_map<int, list<pair<int, int>>::iterator> cache;
+    list<pair<int, int>> cacheList;
+    int capacity;
+    
+public:
+    LRUCache(int capacity) {
+        this->capacity = capacity;
+    }
+    
+    int get(int key) {
+        if (cache.find(key) == cache.end()) return -1;
+        cacheList.splice(cacheList.begin(), cacheList, cache[key]);
+        return cache[key]->second;
+    }
+    
+    void put(int key, int value) {
+        if (cache.find(key) != cache.end()) {
+            cacheList.splice(cacheList.begin(), cacheList, cache[key]);
+            cache[key]->second = value;
+        } else {
+            if (cacheList.size() == capacity) {
+                cache.erase(cacheList.back().first);
+                cacheList.pop_back();
+            }
+            cacheList.push_front({key, value});
+            cache[key] = cacheList.begin();
+        }
+    }
+}
+            </pre>
+        </section>
+    </main>
+</body>
+</html>

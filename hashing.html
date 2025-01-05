@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hashing Problems and Solutions</title>
+    <style>
+         /* Basic Reset */
+         * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.6;
+            padding: 0 10%;
+        }
+
+        h1, h3 {
+            color: #ffffff;
+        }
+
+        h2 {
+            color: #00ff00;
+        }
+
+        header {
+            background-color: #333;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+        }
+
+        main {
+            padding: 20px 0;
+        }
+
+        .problem-details {
+            background-color: #333;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .problem-details pre {
+            background-color: #1e1e1e;
+            padding: 10px;
+            color: #a0a0a0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Hashing Problems and Solutions</h1>
+    </header>
+
+    <!-- Find the First Non-Repeating Character in a String -->
+    <section id="firstNonRepeatingChar" class="problem-details">
+        <h3>Find the First Non-Repeating Character in a String</h3>
+        <pre>
+function firstNonRepeatingCharacter(str) {
+    let freqMap = {};
+    
+    // Count frequency of each character
+    for (let char of str) {
+        freqMap[char] = (freqMap[char] || 0) + 1;
+    }
+    
+    // Find first non-repeating character
+    for (let char of str) {
+        if (freqMap[char] === 1) {
+            return char;
+        }
+    }
+    
+    return null; // No non-repeating character
+}
+        </pre>
+    </section>
+
+    <!-- Count Distinct Elements in a Window -->
+    <section id="countDistinctInWindow" class="problem-details">
+        <h3>Count Distinct Elements in a Window</h3>
+        <pre>
+function countDistinctInWindow(arr, k) {
+    let freqMap = {};
+    let result = [];
+    
+    for (let i = 0; i < k; i++) {
+        freqMap[arr[i]] = (freqMap[arr[i]] || 0) + 1;
+    }
+    
+    result.push(Object.keys(freqMap).length);
+
+    for (let i = k; i < arr.length; i++) {
+        freqMap[arr[i - k]]--;
+        if (freqMap[arr[i - k]] === 0) {
+            delete freqMap[arr[i - k]];
+        }
+        freqMap[arr[i]] = (freqMap[arr[i]] || 0) + 1;
+        result.push(Object.keys(freqMap).length);
+    }
+    
+    return result;
+}
+        </pre>
+    </section>
+
+    <!-- Check if Two Strings Are Anagrams of Each Other -->
+    <section id="checkAnagrams" class="problem-details">
+        <h3>Check if Two Strings Are Anagrams of Each Other</h3>
+        <pre>
+function areAnagrams(str1, str2) {
+    if (str1.length !== str2.length) {
+        return false;
+    }
+    
+    let freqMap = {};
+    
+    for (let char of str1) {
+        freqMap[char] = (freqMap[char] || 0) + 1;
+    }
+    
+    for (let char of str2) {
+        if (!freqMap[char]) {
+            return false;
+        }
+        freqMap[char]--;
+    }
+    
+    return true;
+}
+        </pre>
+    </section>
+
+    <!-- Find Pairs with a Given Sum in an Array -->
+    <section id="pairsWithGivenSum" class="problem-details">
+        <h3>Find Pairs with a Given Sum in an Array</h3>
+        <pre>
+function findPairsWithSum(arr, sum) {
+    let freqMap = {};
+    let result = [];
+    
+    for (let num of arr) {
+        let complement = sum - num;
+        if (freqMap[complement]) {
+            result.push([complement, num]);
+        }
+        freqMap[num] = (freqMap[num] || 0) + 1;
+    }
+    
+    return result;
+}
+        </pre>
+    </section>
+
+    <!-- Subarray with Given Sum (Using Hash Map) -->
+    <section id="subarrayWithGivenSum" class="problem-details">
+        <h3>Subarray with Given Sum (Using Hash Map)</h3>
+        <pre>
+function subarrayWithGivenSum(arr, targetSum) {
+    let sumMap = new Map();
+    let currentSum = 0;
+    
+    for (let i = 0; i < arr.length; i++) {
+        currentSum += arr[i];
+        
+        if (currentSum === targetSum) {
+            return arr.slice(0, i + 1);
+        }
+        
+        if (sumMap.has(currentSum - targetSum)) {
+            return arr.slice(sumMap.get(currentSum - targetSum) + 1, i + 1);
+        }
+        
+        sumMap.set(currentSum, i);
+    }
+    
+    return null; // No subarray found
+}
+        </pre>
+    </section>
+
+    <!-- Longest Subarray with At Most K Distinct Characters -->
+    <section id="longestSubarrayWithKDistinctChars" class="problem-details">
+        <h3>Longest Subarray with At Most K Distinct Characters</h3>
+        <pre>
+function longestSubarrayWithKDistinctChars(str, k) {
+    let freqMap = {};
+    let left = 0;
+    let maxLength = 0;
+    
+    for (let right = 0; right < str.length; right++) {
+        freqMap[str[right]] = (freqMap[str[right]] || 0) + 1;
+        
+        while (Object.keys(freqMap).length > k) {
+            freqMap[str[left]]--;
+            if (freqMap[str[left]] === 0) {
+                delete freqMap[str[left]];
+            }
+            left++;
+        }
+        
+        maxLength = Math.max(maxLength, right - left + 1);
+    }
+    
+    return maxLength;
+}
+        </pre>
+    </section>
+
+    <!-- Group Anagrams Together -->
+    <section id="groupAnagrams" class="problem-details">
+        <h3>Group Anagrams Together</h3>
+        <pre>
+function groupAnagrams(strs) {
+    let result = {};
+    
+    for (let str of strs) {
+        let sortedStr = str.split('').sort().join('');
+        if (!result[sortedStr]) {
+            result[sortedStr] = [];
+        }
+        result[sortedStr].push(str);
+    }
+    
+    return Object.values(result);
+}
+        </pre>
+    </section>
+
+    <!-- Implement a Hash Map -->
+    <section id="implementHashMap" class="problem-details">
+        <h3>Implement a Hash Map</h3>
+        <pre>
+class HashMap {
+    constructor() {
+        this.map = new Array(100);
+    }
+
+    hash(key) {
+        let hashCode = 0;
+        for (let i = 0; i < key.length; i++) {
+            hashCode = (hashCode + key.charCodeAt(i)) % this.map.length;
+        }
+        return hashCode;
+    }
+
+    set(key, value) {
+        let index = this.hash(key);
+        this.map[index] = this.map[index] || [];
+        this.map[index].push([key, value]);
+    }
+
+    get(key) {
+        let index = this.hash(key);
+        if (this.map[index]) {
+            for (let [k, v] of this.map[index]) {
+                if (k === key) {
+                    return v;
+                }
+            }
+        }
+        return undefined;
+    }
+
+    remove(key) {
+        let index = this.hash(key);
+        if (this.map[index]) {
+            this.map[index] = this.map[index].filter(([k, _]) => k !== key);
+        }
+    }
+}
+        </pre>
+    </section>
+
+</body>
+</html>

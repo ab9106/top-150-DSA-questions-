@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Greedy Algorithms and Problem Solutions</title>
+    <style>
+          /* Basic Reset */
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.6;
+            padding: 0 10%;
+        }
+
+        h1, h3 {
+            color: #ffffff;
+        }
+
+        h2 {
+            color: #00ff00;
+        }
+
+        header {
+            background-color: #333;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+        }
+
+        main {
+            padding: 20px 0;
+        }
+
+        .problem-details {
+            background-color: #333;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .problem-details pre {
+            background-color: #1e1e1e;
+            padding: 10px;
+            color: #a0a0a0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Greedy Algorithm Problems and Solutions</h1>
+    </header>
+
+    <!-- Activity Selection Problem -->
+    <section id="activitySelection" class="problem-details">
+        <h3>Activity Selection Problem</h3>
+        <pre>
+function activitySelection(start, end) {
+    let n = start.length;
+    let result = [];
+    let lastSelected = 0;
+    result.push(0);
+
+    for (let i = 1; i < n; i++) {
+        if (start[i] >= end[lastSelected]) {
+            result.push(i);
+            lastSelected = i;
+        }
+    }
+
+    return result;
+}
+        </pre>
+    </section>
+
+    <!-- Fractional Knapsack Problem -->
+    <section id="fractionalKnapsack" class="problem-details">
+        <h3>Fractional Knapsack Problem</h3>
+        <pre>
+function fractionalKnapsack(weights, values, capacity) {
+    let n = weights.length;
+    let items = [];
+    
+    for (let i = 0; i < n; i++) {
+        items.push([values[i], weights[i], values[i] / weights[i]]);
+    }
+    
+    items.sort((a, b) => b[2] - a[2]);
+
+    let maxValue = 0;
+    for (let i = 0; i < n; i++) {
+        if (capacity === 0) break;
+        let weightToTake = Math.min(items[i][1], capacity);
+        maxValue += weightToTake * items[i][2];
+        capacity -= weightToTake;
+    }
+    
+    return maxValue;
+}
+        </pre>
+    </section>
+
+    <!-- Job Sequencing Problem -->
+    <section id="jobSequencing" class="problem-details">
+        <h3>Job Sequencing Problem</h3>
+        <pre>
+function jobSequencing(jobs) {
+    jobs.sort((a, b) => b.profit - a.profit);
+
+    let result = [];
+    let n = jobs.length;
+    let maxDeadline = Math.max(...jobs.map(job => job.deadline));
+    let slots = new Array(maxDeadline).fill(false);
+
+    for (let i = 0; i < n; i++) {
+        for (let j = jobs[i].deadline - 1; j >= 0; j--) {
+            if (!slots[j]) {
+                result.push(jobs[i]);
+                slots[j] = true;
+                break;
+            }
+        }
+    }
+    return result;
+}
+        </pre>
+    </section>
+
+    <!-- Minimum Number of Platforms Required for a Railway Station -->
+    <section id="minimumPlatforms" class="problem-details">
+        <h3>Minimum Number of Platforms Required for a Railway Station</h3>
+        <pre>
+function findPlatforms(arrivals, departures) {
+    let n = arrivals.length;
+    arrivals.sort((a, b) => a - b);
+    departures.sort((a, b) => a - b);
+
+    let platforms = 1;
+    let result = 1;
+    let i = 1, j = 0;
+
+    while (i < n && j < n) {
+        if (arrivals[i] <= departures[j]) {
+            platforms++;
+            i++;
+        } else {
+            platforms--;
+            j++;
+        }
+        result = Math.max(result, platforms);
+    }
+
+    return result;
+}
+        </pre>
+    </section>
+
+    <!-- Huffman Coding -->
+    <section id="huffmanCoding" class="problem-details">
+        <h3>Huffman Coding</h3>
+        <pre>
+function huffmanCoding(s) {
+    let freq = {};
+    for (let char of s) {
+        freq[char] = (freq[char] || 0) + 1;
+    }
+
+    let pq = Object.entries(freq).map(([char, count]) => ({ char, count }));
+    pq.sort((a, b) => a.count - b.count);
+
+    while (pq.length > 1) {
+        let left = pq.shift();
+        let right = pq.shift();
+        let combined = { 
+            count: left.count + right.count, 
+            left, 
+            right 
+        };
+        pq.push(combined);
+        pq.sort((a, b) => a.count - b.count);
+    }
+
+    function generateCodes(node, prefix = '') {
+        if (node.char) {
+            return { [node.char]: prefix };
+        }
+        return { ...generateCodes(node.left, prefix + '0'), ...generateCodes(node.right, prefix + '1') };
+    }
+
+    return generateCodes(pq[0]);
+}
+        </pre>
+    </section>
+
+    <!-- Dijkstra’s Algorithm (Single Source Shortest Path) -->
+    <section id="dijkstra" class="problem-details">
+        <h3>Dijkstra’s Algorithm (Single Source Shortest Path)</h3>
+        <pre>
+function dijkstra(graph, source) {
+    let dist = {};
+    let pq = new MinPriorityQueue();
+    pq.push({ node: source, dist: 0 });
+
+    for (let node of graph) {
+        dist[node] = Infinity;
+    }
+    dist[source] = 0;
+
+    while (!pq.isEmpty()) {
+        let { node, dist: currentDist } = pq.pop();
+        for (let neighbor of graph[node]) {
+            let newDist = currentDist + neighbor.weight;
+            if (newDist < dist[neighbor.node]) {
+                dist[neighbor.node] = newDist;
+                pq.push({ node: neighbor.node, dist: newDist });
+            }
+        }
+    }
+    return dist;
+}
+        </pre>
+    </section>
+
+    <!-- Optimal Job Scheduling (Weighted Job Scheduling) -->
+    <section id="optimalJobScheduling" class="problem-details">
+        <h3>Optimal Job Scheduling (Weighted Job Scheduling)</h3>
+        <pre>
+function weightedJobScheduling(jobs) {
+    jobs.sort((a, b) => a.finish - b.finish);
+    
+    let dp = new Array(jobs.length).fill(0);
+    dp[0] = jobs[0].profit;
+    
+    for (let i = 1; i < jobs.length; i++) {
+        let includeProfit = jobs[i].profit;
+        let lastNonConflicting = findLastNonConflictingJob(jobs, i);
+        if (lastNonConflicting !== -1) {
+            includeProfit += dp[lastNonConflicting];
+        }
+        dp[i] = Math.max(dp[i - 1], includeProfit);
+    }
+    return dp[jobs.length - 1];
+}
+
+function findLastNonConflictingJob(jobs, index) {
+    for (let i = index - 1; i >= 0; i--) {
+        if (jobs[i].finish <= jobs[index].start) {
+            return i;
+        }
+    }
+    return -1;
+}
+        </pre>
+    </section>
+
+    <!-- Find Maximum Water Trapped in a Histogram -->
+    <section id="maxWaterTrapped" class="problem-details">
+        <h3>Find Maximum Water Trapped in a Histogram</h3>
+        <pre>
+function maxWaterTrapped(heights) {
+    let n = heights.length;
+    let leftMax = new Array(n).fill(0);
+    let rightMax = new Array(n).fill(0);
+    let water = 0;
+
+    leftMax[0] = heights[0];
+    for (let i = 1; i < n; i++) {
+        leftMax[i] = Math.max(leftMax[i - 1], heights[i]);
+    }
+
+    rightMax[n - 1] = heights[n - 1];
+    for (let i = n - 2; i >= 0; i--) {
+        rightMax[i] = Math.max(rightMax[i + 1], heights[i]);
+    }
+
+    for (let i = 0; i < n; i++) {
+        water += Math.min(leftMax[i], rightMax[i]) - heights[i];
+    }
+
+    return water;
+}
+        </pre>
+    </section>
+
+    <!-- Minimum Spanning Tree (Prim's and Kruskal's Algorithm) -->
+    <section id="mst" class="problem-details">
+        <h3>Minimum Spanning Tree (Prim’s and Kruskal’s Algorithm)</h3>
+        <pre>
+function primMST(graph, V) {
+    let parent = new Array(V).fill(-1);
+    let key = new Array(V).fill(Infinity);
+    let minHeap = new PriorityQueue();
+    
+    key[0] = 0;
+    minHeap.push({ node: 0, key: 0 });
+    
+    while (!minHeap.isEmpty()) {
+        let { node } = minHeap.pop();
+        for (let neighbor of graph[node]) {
+            let newKey = key[node] + neighbor.weight;
+            if (newKey < key[neighbor.node]) {
+                key[neighbor.node] = newKey;
+                parent[neighbor.node] = node;
+                minHeap.push({ node: neighbor.node, key: newKey });
+            }
+        }
+    }
+    return parent;
+}
+        </pre>
+    </section>
+
+</body>
+</html>

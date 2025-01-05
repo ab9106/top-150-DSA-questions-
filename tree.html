@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binary Tree Coding Problems</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.6;
+            padding: 0 10%;
+        }
+
+        h1, h3 {
+            color: #ffffff;
+        }
+
+        h2 {
+            color: #00ff00;
+        }
+
+        header {
+            background-color: #333;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+        }
+
+        main {
+            padding: 20px 0;
+        }
+
+        .problem-details {
+            background-color: #333;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .problem-details pre {
+            background-color: #1e1e1e;
+            padding: 10px;
+            color: #a0a0a0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tree Coding Problems</h1>
+
+    <main>
+        <section class="problem-details">
+            <h3>Implement a Binary Tree</h3>
+            <pre>
+class TreeNode {
+public:
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+class BinaryTree {
+public:
+    TreeNode* root;
+    BinaryTree() : root(NULL) {}
+};
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Inorder Traversal of a Binary Tree</h3>
+            <pre>
+void inorderTraversal(TreeNode* root) {
+    if (root == NULL) return;
+    inorderTraversal(root->left);
+    cout << root->val << " ";
+    inorderTraversal(root->right);
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Preorder Traversal of a Binary Tree</h3>
+            <pre>
+void preorderTraversal(TreeNode* root) {
+    if (root == NULL) return;
+    cout << root->val << " ";
+    preorderTraversal(root->left);
+    preorderTraversal(root->right);
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Postorder Traversal of a Binary Tree</h3>
+            <pre>
+void postorderTraversal(TreeNode* root) {
+    if (root == NULL) return;
+    postorderTraversal(root->left);
+    postorderTraversal(root->right);
+    cout << root->val << " ";
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Check if a Binary Tree is Balanced</h3>
+            <pre>
+int height(TreeNode* root) {
+    if (root == NULL) return 0;
+    return max(height(root->left), height(root->right)) + 1;
+}
+
+bool isBalanced(TreeNode* root) {
+    if (root == NULL) return true;
+    int leftHeight = height(root->left);
+    int rightHeight = height(root->right);
+    return abs(leftHeight - rightHeight) <= 1 && isBalanced(root->left) && isBalanced(root->right);
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Check if a Binary Tree is a Binary Search Tree (BST)</h3>
+            <pre>
+bool isBST(TreeNode* root, int minVal, int maxVal) {
+    if (root == NULL) return true;
+    if (root->val <= minVal || root->val >= maxVal) return false;
+    return isBST(root->left, minVal, root->val) && isBST(root->right, root->val, maxVal);
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Find the Height of a Binary Tree</h3>
+            <pre>
+int height(TreeNode* root) {
+    if (root == NULL) return 0;
+    return max(height(root->left), height(root->right)) + 1;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Level Order Traversal of a Binary Tree</h3>
+            <pre>
+vector<vector<int>> levelOrder(TreeNode* root) {
+    vector<vector<int>> result;
+    if (root == NULL) return result;
+    queue<TreeNode*> q;
+    q.push(root);
+    while (!q.empty()) {
+        int levelSize = q.size();
+        vector<int> level;
+        for (int i = 0; i < levelSize; i++) {
+            TreeNode* node = q.front();
+            q.pop();
+            level.push_back(node->val);
+            if (node->left) q.push(node->left);
+            if (node->right) q.push(node->right);
+        }
+        result.push_back(level);
+    }
+    return result;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Convert a Binary Tree to a Doubly Linked List</h3>
+            <pre>
+TreeNode* head = NULL, *tail = NULL;
+
+void convertToDLL(TreeNode* root) {
+    if (root == NULL) return;
+    convertToDLL(root->left);
+    if (tail == NULL) {
+        head = root;
+    } else {
+        tail->right = root;
+        root->left = tail;
+    }
+    tail = root;
+    convertToDLL(root->right);
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Lowest Common Ancestor of a Binary Tree</h3>
+            <pre>
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    if (root == NULL || root == p || root == q) return root;
+    TreeNode* left = lowestCommonAncestor(root->left, p, q);
+    TreeNode* right = lowestCommonAncestor(root->right, p, q);
+    if (left == NULL) return right;
+    if (right == NULL) return left;
+    return root;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Serialize and Deserialize a Binary Tree</h3>
+            <pre>
+string serialize(TreeNode* root) {
+    if (root == NULL) return "#";
+    return to_string(root->val) + "," + serialize(root->left) + "," + serialize(root->right);
+}
+
+TreeNode* deserialize(string data) {
+    stringstream ss(data);
+    return deserializeHelper(ss);
+}
+
+TreeNode* deserializeHelper(stringstream& ss) {
+    string val;
+    getline(ss, val, ',');
+    if (val == "#") return NULL;
+    TreeNode* node = new TreeNode(stoi(val));
+    node->left = deserializeHelper(ss);
+    node->right = deserializeHelper(ss);
+    return node;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Flatten a Binary Tree to a Linked List</h3>
+            <pre>
+void flatten(TreeNode* root) {
+    if (root == NULL) return;
+    if (root->left) {
+        flatten(root->left);
+        TreeNode* temp = root->right;
+        root->right = root->left;
+        root->left = NULL;
+        while (root->right) root = root->right;
+        root->right = temp;
+    }
+    flatten(root->right);
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Find the Diameter of a Binary Tree</h3>
+            <pre>
+int diameter = 0;
+
+int findDiameter(TreeNode* root) {
+    if (root == NULL) return 0;
+    int leftHeight = findDiameter(root->left);
+    int rightHeight = findDiameter(root->right);
+    diameter = max(diameter, leftHeight + rightHeight);
+    return max(leftHeight, rightHeight) + 1;
+}
+
+int getDiameter() {
+    findDiameter(root);
+    return diameter;
+}
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Construct a Binary Tree from Inorder and Preorder</h3>
+            <pre>
+TreeNode* buildTree(vector<int>& inorder, vector<int>& preorder) {
+    unordered_map<int, int> inorderMap;
+    for (int i = 0; i < inorder.size(); i++) {
+        inorderMap[inorder[i]] = i;
+    }
+    return buildTreeHelper(preorder, inorderMap, 0, preorder.size() - 1, 0);
+}
+
+TreeNode* buildTreeHelper(vector<int>& preorder, unordered_map<int, int>& inorderMap, int preStart, int preEnd, int inStart) {
+    if (preStart > preEnd) return NULL;
+    TreeNode* root = new TreeNode(preorder[preStart]);
+    int inIndex = inorderMap[root->val];
+    root->left = buildTreeHelper(preorder, inorderMap, preStart + 1, preStart + inIndex - inStart, inStart);
+    root->right = buildTreeHelper(preorder, inorderMap, preStart + inIndex - inStart + 1, preEnd, inIndex + 1);
+    return root;
+}
+            </pre>
+        </section>
+    </main>
+</body>
+</html>

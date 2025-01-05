@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algorithm Solutions</title>
+    <style>
+          /* Basic Reset */
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.6;
+            padding: 0 10%;
+        }
+
+        h1, h3 {
+            color: #ffffff;
+        }
+
+        h2 {
+            color: #00ff00;
+        }
+
+        header {
+            background-color: #333;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+        }
+
+        main {
+            padding: 20px 0;
+        }
+
+        .problem-details {
+            background-color: #333;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .problem-details pre {
+            background-color: #1e1e1e;
+            padding: 10px;
+            color: #a0a0a0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Backtracking Problems</h1>
+
+    <section id="nQueens" class="problem-details">
+        <h3>N-Queens Problem</h3>
+        <pre>
+function solveNQueens(n) {
+    let result = [];
+    let board = new Array(n).fill().map(() => new Array(n).fill('.'));
+    let cols = new Array(n).fill(false), diag1 = new Array(2*n - 1).fill(false), diag2 = new Array(2*n - 1).fill(false);
+
+    function backtrack(row) {
+        if (row === n) {
+            result.push(board.map(r => r.join('')));
+            return;
+        }
+        for (let col = 0; col < n; col++) {
+            if (cols[col] || diag1[row - col + n - 1] || diag2[row + col]) continue;
+            board[row][col] = 'Q';
+            cols[col] = diag1[row - col + n - 1] = diag2[row + col] = true;
+            backtrack(row + 1);
+            board[row][col] = '.';
+            cols[col] = diag1[row - col + n - 1] = diag2[row + col] = false;
+        }
+    }
+
+    backtrack(0);
+    return result;
+}
+        </pre>
+    </section>
+
+    <section id="sudoku" class="problem-details">
+        <h3>Sudoku Solver</h3>
+        <pre>
+function solveSudoku(board) {
+    function isValid(board, row, col, num) {
+        for (let i = 0; i < 9; i++) {
+            if (board[row][i] === num || board[i][col] === num) return false;
+            if (board[Math.floor(row / 3) * 3 + Math.floor(i / 3)][Math.floor(col / 3) * 3 + i % 3] === num) return false;
+        }
+        return true;
+    }
+    
+    function backtrack(board) {
+        for (let row = 0; row < 9; row++) {
+            for (let col = 0; col < 9; col++) {
+                if (board[row][col] === '.') {
+                    for (let num = 1; num <= 9; num++) {
+                        if (isValid(board, row, col, num.toString())) {
+                            board[row][col] = num.toString();
+                            if (backtrack(board)) return true;
+                            board[row][col] = '.';
+                        }
+                    }
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    backtrack(board);
+}
+        </pre>
+    </section>
+
+    <section id="subsets" class="problem-details">
+        <h3>Find All Subsets of a Set (Power Set)</h3>
+        <pre>
+function subsets(nums) {
+    let result = [];
+    function backtrack(start, current) {
+        result.push([...current]);
+        for (let i = start; i < nums.length; i++) {
+            current.push(nums[i]);
+            backtrack(i + 1, current);
+            current.pop();
+        }
+    }
+    backtrack(0, []);
+    return result;
+}
+        </pre>
+    </section>
+
+    <section id="permutations" class="problem-details">
+        <h3>Generate All Permutations of a String</h3>
+        <pre>
+function permute(nums) {
+    let result = [];
+    function backtrack(start) {
+        if (start === nums.length) {
+            result.push([...nums]);
+            return;
+        }
+        for (let i = start; i < nums.length; i++) {
+            [nums[start], nums[i]] = [nums[i], nums[start]]; // Swap
+            backtrack(start + 1);
+            [nums[start], nums[i]] = [nums[i], nums[start]]; // Backtrack
+        }
+    }
+    backtrack(0);
+    return result;
+}
+        </pre>
+    </section>
+
+    <section id="combinations" class="problem-details">
+        <h3>Generate All Combinations of a Set</h3>
+        <pre>
+function combine(n, k) {
+    let result = [];
+    function backtrack(start, current) {
+        if (current.length === k) {
+            result.push([...current]);
+            return;
+        }
+        for (let i = start; i <= n; i++) {
+            current.push(i);
+            backtrack(i + 1, current);
+            current.pop();
+        }
+    }
+    backtrack(1, []);
+    return result;
+}
+        </pre>
+    </section>
+
+    <section id="ratInMaze" class="problem-details">
+        <h3>Solve the Rat in a Maze Problem</h3>
+        <pre>
+function solveMaze(maze, start, end) {
+    let N = maze.length;
+    let result = [];
+    let visited = Array.from({length: N}, () => Array(N).fill(false));
+
+    function backtrack(x, y, path) {
+        if (x === end[0] && y === end[1]) {
+            result.push([...path]);
+            return;
+        }
+        if (x < 0 || y < 0 || x >= N || y >= N || maze[x][y] === 0 || visited[x][y]) return;
+        visited[x][y] = true;
+        path.push([x, y]);
+
+        backtrack(x + 1, y, path);
+        backtrack(x - 1, y, path);
+        backtrack(x, y + 1, path);
+        backtrack(x, y - 1, path);
+
+        path.pop();
+        visited[x][y] = false;
+    }
+
+    backtrack(start[0], start[1], []);
+    return result;
+}
+        </pre>
+    </section>
+
+    <section id="hamiltonianPath" class="problem-details">
+        <h3>Find the Hamiltonian Path in a Graph</h3>
+        <pre>
+function hamiltonianPath(graph, start) {
+    let N = graph.length;
+    let visited = Array(N).fill(false);
+    let path = [];
+
+    function backtrack(v) {
+        path.push(v);
+        visited[v] = true;
+        
+        if (path.length === N) return true;
+        for (let i = 0; i < N; i++) {
+            if (graph[v][i] === 1 && !visited[i]) {
+                if (backtrack(i)) return true;
+            }
+        }
+        
+        visited[v] = false;
+        path.pop();
+        return false;
+    }
+
+    return backtrack(start) ? path : [];
+}
+        </pre>
+    </section>
+
+    <section id="subsetSum" class="problem-details">
+        <h3>Subset Sum Problem Using Backtracking</h3>
+        <pre>
+function subsetSum(nums, target) {
+    let result = [];
+    function backtrack(start, currentSum, current) {
+        if (currentSum === target) {
+            result.push([...current]);
+            return;
+        }
+        if (currentSum > target) return;
+        for (let i = start; i < nums.length; i++) {
+            current.push(nums[i]);
+            backtrack(i + 1, currentSum + nums[i], current);
+            current.pop();
+        }
+    }
+    backtrack(0, 0, []);
+    return result;
+}
+        </pre>
+    </section>
+
+    <section id="wordSearch" class="problem-details">
+        <h3>Word Search in a 2D Matrix</h3>
+        <pre>
+function exist(board, word) {
+    let m = board.length, n = board[0].length;
+
+    function dfs(i, j, index) {
+        if (index === word.length) return true;
+        if (i < 0 || j < 0 || i >= m || j >= n || board[i][j] !== word[index]) return false;
+
+        let temp = board[i][j];
+        board[i][j] = '#'; // Mark as visited
+
+        let res = dfs(i + 1, j, index + 1) || dfs(i - 1, j, index + 1) ||
+                 dfs(i, j + 1, index + 1) || dfs(i, j - 1, index + 1);
+
+        board[i][j] = temp; // Restore
+        return res;
+    }
+
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            if (dfs(i, j, 0)) return true;
+        }
+    }
+
+    return false;
+}
+        </pre>
+    </section>
+
+    <section id="combinationSum" class="problem-details">
+        <h3>Combination Sum</h3>
+        <pre>
+function combinationSum(candidates, target) {
+    let result = [];
+    function backtrack(start, currentSum, current) {
+        if (currentSum === target) {
+            result.push([...current]);
+            return;
+        }
+        if (currentSum > target) return;
+        for (let i = start; i < candidates.length; i++) {
+            current.push(candidates[i]);
+            backtrack(i, currentSum + candidates[i], current);
+            current.pop();
+        }
+    }
+    backtrack(0, 0, []);
+    return result;
+}
+        </pre>
+    </section>
+
+    <section id="palindromePartition" class="problem-details">
+        <h3>Palindrome Partitioning</h3>
+        <pre>
+function partition(s) {
+    let result = [];
+    function backtrack(start, current) {
+        if (start === s.length) {
+            result.push([...current]);
+            return;
+        }
+        for (let end = start + 1; end <= s.length; end++) {
+            let sub = s.slice(start, end);
+            if (sub === sub.split('').reverse().join('')) {
+                current.push(sub);
+                backtrack(end, current);
+                current.pop();
+            }
+        }
+    }
+    backtrack(0, []);
+    return result;
+}
+        </pre>
+    </section>
+
+    <section id="expressionsForValue" class="problem-details">
+        <h3>All Possible Expressions for a Given Value</h3>
+        <pre>
+function diffWaysToCompute(input) {
+    let result = [];
+    
+    function calculate(left, right, op) {
+        if (op === '+') return left + right;
+        if (op === '-') return left - right;
+        if (op === '*') return left * right;
+    }
+    
+    for (let i = 0; i < input.length; i++) {
+        if (['+', '-', '*'].includes(input[i])) {
+            let left = diffWaysToCompute(input.slice(0, i));
+            let right = diffWaysToCompute(input.slice(i + 1));
+            
+            for (let l of left) {
+                for (let r of right) {
+                    result.push(calculate(l, r, input[i]));
+                }
+            }
+        }
+    }
+    
+    if (result.length === 0) result.push(Number(input));
+    return result;
+}
+        </pre>
+    </section>
+</body>
+</html>

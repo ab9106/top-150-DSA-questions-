@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Algorithms</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.6;
+            padding: 0 10%;
+        }
+
+        h1, h3 {
+            color: #ffffff;
+        }
+
+        h2 {
+            color: #00ff00;
+        }
+
+        header {
+            background-color: #333;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+        }
+
+        main {
+            padding: 20px 0;
+        }
+
+        .problem-details {
+            background-color: #333;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .problem-details pre {
+            background-color: #1e1e1e;
+            padding: 10px;
+            color: #a0a0a0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Graph Algorithms and Data Structures</h1>
+
+    <main>
+        <section class="problem-details">
+            <h3>Graph Implementation using Adjacency List</h3>
+            <pre>
+class Graph:
+    def __init__(self, vertices):
+        self.vertices = vertices
+        self.graph = {i: [] for i in range(vertices)}
+
+    def add_edge(self, u, v):
+        self.graph[u].append(v)
+        self.graph[v].append(u)
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Graph Implementation using Adjacency Matrix</h3>
+            <pre>
+class Graph:
+    def __init__(self, vertices):
+        self.vertices = vertices
+        self.graph = [[0] * vertices for _ in range(vertices)]
+
+    def add_edge(self, u, v):
+        self.graph[u][v] = 1
+        self.graph[v][u] = 1
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Depth-First Search (DFS) in a Graph</h3>
+            <pre>
+def dfs(graph, vertex, visited):
+    visited[vertex] = True
+    print(vertex, end=' ')
+    for neighbor in graph[vertex]:
+        if not visited[neighbor]:
+            dfs(graph, neighbor, visited)
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Breadth-First Search (BFS) in a Graph</h3>
+            <pre>
+from collections import deque
+
+def bfs(graph, start):
+    visited = [False] * len(graph)
+    queue = deque([start])
+    visited[start] = True
+    while queue:
+        vertex = queue.popleft()
+        print(vertex, end=' ')
+        for neighbor in graph[vertex]:
+            if not visited[neighbor]:
+                queue.append(neighbor)
+                visited[neighbor] = True
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Check if a Graph is Bipartite</h3>
+            <pre>
+def is_bipartite(graph):
+    color = [-1] * len(graph)
+    
+    def dfs(vertex, c):
+        color[vertex] = c
+        for neighbor in graph[vertex]:
+            if color[neighbor] == -1:
+                if not dfs(neighbor, 1 - c): return False
+            elif color[neighbor] == color[vertex]:
+                return False
+        return True
+    
+    for i in range(len(graph)):
+        if color[i] == -1:
+            if not dfs(i, 0):
+                return False
+    return True
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Find the Shortest Path in an Unweighted Graph (BFS)</h3>
+            <pre>
+def shortest_path_unweighted(graph, start, target):
+    from collections import deque
+    queue = deque([(start, 0)])  # (vertex, distance)
+    visited = [False] * len(graph)
+    visited[start] = True
+    
+    while queue:
+        vertex, dist = queue.popleft()
+        if vertex == target:
+            return dist
+        for neighbor in graph[vertex]:
+            if not visited[neighbor]:
+                visited[neighbor] = True
+                queue.append((neighbor, dist + 1))
+    return -1
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Dijkstra’s Algorithm</h3>
+            <pre>
+import heapq
+
+def dijkstra(graph, start):
+    distances = {vertex: float('infinity') for vertex in range(len(graph))}
+    distances[start] = 0
+    pq = [(0, start)]  # (distance, vertex)
+    
+    while pq:
+        current_distance, current_vertex = heapq.heappop(pq)
+        
+        if current_distance > distances[current_vertex]:
+            continue
+        
+        for neighbor, weight in graph[current_vertex]:
+            distance = current_distance + weight
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                heapq.heappush(pq, (distance, neighbor))
+    return distances
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Bellman-Ford Algorithm</h3>
+            <pre>
+def bellman_ford(graph, vertices, start):
+    distances = [float('inf')] * vertices
+    distances[start] = 0
+    for _ in range(vertices - 1):
+        for u, v, w in graph:
+            if distances[u] + w < distances[v]:
+                distances[v] = distances[u] + w
+    for u, v, w in graph:
+        if distances[u] + w < distances[v]:
+            print("Graph contains negative weight cycle")
+            return None
+    return distances
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Floyd-Warshall Algorithm</h3>
+            <pre>
+def floyd_warshall(graph, vertices):
+    dist = [[float('inf')] * vertices for _ in range(vertices)]
+    for u in range(vertices):
+        dist[u][u] = 0
+    for u, v, w in graph:
+        dist[u][v] = w
+    for k in range(vertices):
+        for i in range(vertices):
+            for j in range(vertices):
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+    return dist
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Find Strongly Connected Components (Kosaraju's Algorithm)</h3>
+            <pre>
+def kosaraju(graph):
+    def dfs(v, visited, stack):
+        visited[v] = True
+        for neighbor in graph[v]:
+            if not visited[neighbor]:
+                dfs(neighbor, visited, stack)
+        stack.append(v)
+
+    def transpose(graph):
+        transposed = {i: [] for i in range(len(graph))}
+        for u in graph:
+            for v in graph[u]:
+                transposed[v].append(u)
+        return transposed
+    
+    visited = [False] * len(graph)
+    stack = []
+    for i in range(len(graph)):
+        if not visited[i]:
+            dfs(i, visited, stack)
+    
+    transposed_graph = transpose(graph)
+    visited = [False] * len(graph)
+    components = []
+    
+    while stack:
+        node = stack.pop()
+        if not visited[node]:
+            component = []
+            dfs(node, visited, component)
+            components.append(component)
+    
+    return components
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Find the Number of Connected Components in a Graph</h3>
+            <pre>
+def count_components(graph):
+    visited = [False] * len(graph)
+    def dfs(vertex):
+        visited[vertex] = True
+        for neighbor in graph[vertex]:
+            if not visited[neighbor]:
+                dfs(neighbor)
+    
+    count = 0
+    for i in range(len(graph)):
+        if not visited[i]:
+            dfs(i)
+            count += 1
+    return count
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Topological Sorting</h3>
+            <pre>
+def topological_sort(graph):
+    visited = [False] * len(graph)
+    stack = []
+    
+    def dfs(v):
+        visited[v] = True
+        for neighbor in graph[v]:
+            if not visited[neighbor]:
+                dfs(neighbor)
+        stack.append(v)
+
+    for i in range(len(graph)):
+        if not visited[i]:
+            dfs(i)
+    
+    return stack[::-1]  # Return reversed stack
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Detect a Cycle in a Directed Graph</h3>
+            <pre>
+def detect_cycle_directed(graph):
+    visited = [False] * len(graph)
+    rec_stack = [False] * len(graph)
+    
+    def dfs(v):
+        visited[v] = True
+        rec_stack[v] = True
+        for neighbor in graph[v]:
+            if not visited[neighbor]:
+                if dfs(neighbor):
+                    return True
+            elif rec_stack[neighbor]:
+                return True
+        rec_stack[v] = False
+        return False
+    
+    for i in range(len(graph)):
+        if not visited[i]:
+            if dfs(i):
+                return True
+    return False
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Detect a Cycle in an Undirected Graph</h3>
+            <pre>
+def detect_cycle_undirected(graph):
+    visited = [False] * len(graph)
+    
+    def dfs(v, parent):
+        visited[v] = True
+        for neighbor in graph[v]:
+            if not visited[neighbor]:
+                if dfs(neighbor, v):
+                    return True
+            elif parent != neighbor:
+                return True
+        return False
+    
+    for i in range(len(graph)):
+        if not visited[i]:
+            if dfs(i, -1):
+                return True
+    return False
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Find the Shortest Path in a Weighted Graph (Dijkstra or Bellman-Ford)</h3>
+            <pre>
+# Refer to previous implementations of Dijkstra or Bellman-Ford
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Prim’s Algorithm (Minimum Spanning Tree)</h3>
+            <pre>
+import heapq
+
+def prim(graph):
+    mst = []
+    visited = [False] * len(graph)
+    pq = [(0, 0)]  # (weight, vertex)
+    
+    while pq:
+        weight, u = heapq.heappop(pq)
+        if visited[u]:
+            continue
+        visited[u] = True
+        mst.append((weight, u))
+        
+        for v, w in graph[u]:
+            if not visited[v]:
+                heapq.heappush(pq, (w, v))
+    return mst
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Kruskal’s Algorithm (Minimum Spanning Tree)</h3>
+            <pre>
+def kruskal(graph, vertices):
+    parent = list(range(vertices))
+    rank = [0] * vertices
+    
+    def find(x):
+        if parent[x] != x:
+            parent[x] = find(parent[x])
+        return parent[x]
+
+    def union(x, y):
+        rootX = find(x)
+        rootY = find(y)
+        if rootX != rootY:
+            if rank[rootX] > rank[rootY]:
+                parent[rootY] = rootX
+            else:
+                parent[rootX] = rootY
+                if rank[rootX] == rank[rootY]:
+                    rank[rootY] += 1
+        return rootX != rootY
+
+    edges = sorted(graph, key=lambda x: x[2])
+    mst = []
+    
+    for u, v, w in edges:
+        if union(u, v):
+            mst.append((u, v, w))
+    return mst
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Find All Paths from Source to Destination in a Directed Graph</h3>
+            <pre>
+def all_paths(graph, start, end, path=[]):
+    path = path + [start]
+    if start == end:
+        return [path]
+    paths = []
+    for neighbor in graph[start]:
+        if neighbor not in path:
+            new_paths = all_paths(graph, neighbor, end, path)
+            for p in new_paths:
+                paths.append(p)
+    return paths
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Word Ladder (Shortest Transformation Sequence from Start to End)</h3>
+            <pre>
+from collections import deque
+
+def word_ladder(start, end, word_list):
+    word_set = set(word_list)
+    if end not in word_set:
+        return 0
+    queue = deque([(start, 1)])  # (word, distance)
+    
+    while queue:
+        word, length = queue.popleft()
+        if word == end:
+            return length
+        for i in range(len(word)):
+            for c in 'abcdefghijklmnopqrstuvwxyz':
+                next_word = word[:i] + c + word[i+1:]
+                if next_word in word_set:
+                    queue.append((next_word, length + 1))
+                    word_set.remove(next_word)
+    return 0
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Count the Number of Islands in a Matrix (DFS/BFS)</h3>
+            <pre>
+def num_islands(grid):
+    def dfs(i, j):
+        if i < 0 or j < 0 or i >= len(grid) or j >= len(grid[0]) or grid[i][j] == '0':
+            return
+        grid[i][j] = '0'  # Mark the cell as visited
+        for x, y in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            dfs(i + x, j + y)
+    
+    island_count = 0
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == '1':
+                dfs(i, j)
+                island_count += 1
+    return island_count
+            </pre>
+        </section>
+
+        <section class="problem-details">
+            <h3>Clone a Graph</h3>
+            <pre>
+class Node:
+    def __init__(self, val, neighbors=None):
+        self.val = val
+        self.neighbors = neighbors or []
+
+def clone_graph(node):
+    if not node:
+        return None
+    
+    visited = {}
+    def dfs(node):
+        if node in visited:
+            return visited[node]
+        clone = Node(node.val)
+        visited[node] = clone
+        for neighbor in node.neighbors:
+            clone.neighbors.append(dfs(neighbor))
+        return clone
+    
+    return dfs(node)
+            </pre>
+        </section>
+    </main>
+</body>
+</html>
